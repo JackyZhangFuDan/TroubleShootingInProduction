@@ -153,7 +153,7 @@ Then trigger the method call and stop the trace by 'Ctrl+C', result likes this:
   
 There are many options to filter trace target, check the offical document for detail..  
 
-** Step 4: Exit Arthas and clear the environment **  
+**Step 4: Exit Arthas and clear the environment**  
 Arthas needs to "enhance" some production classes to finish its monitor work, so it would be a good idea to clean these before we leave it. The command is:  
 ```  
 reset  

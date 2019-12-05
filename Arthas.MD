@@ -25,36 +25,103 @@ Let's see how to setup Arthas on Cloud Foundry container (in which my applicatio
 2. You are member of the cloud account and the target space in that account. how to verify: try "cf login" to go through the logon process.
 
 **Step 1: Login app container via SSH**  
-```
-cf ssh projectDashboardService
-```
+ 
+```  
+cf ssh <here is your app name in cloud foundry>
+```   
 If you login successfully, you will see linux-style command sign '$', you locate at your home and you can verify by command 'ls'.
 
 **Step 2: Download Arthas**  
 According to Arthas installation guide, we can get it by this command:
-```
+```  
 curl -O https://alibaba.github.io/arthas/arthas-boot.jar
-```
+```    
 Above command will download arthas into your home page, use command 'ls' to verify, you should see 'arthas-boot.jar' in the result.
 
 **Step 3: Start Arthas**  
 Firstly you need to find out process ID of your jvm in the container:
-```
+```  
 ps -aux
-```
+```  
 record the PID of java process, it is 6 for my case below:  
-![ps -aux result](ps.PNG)
+![ps -aux result](images/ps.PNG)
  
 Above result also tell us which is your java command locates. In Cloud Foundry container, if you run command 'java' in command line, the system will told you it is invalid command, but we know java is installed indeed otherwise how our web server (tomcat) be ran? we need to find java location firstly, actually above result provides us hints, it is "/home/vcap/app/.java-buildpack/open_jdk_jre/bin/java" for my case.
 
 With all of these information, we are ready to start Arthas, for my case:  
-```
-/home/vcap/app/.java-buildpack/open_jdk_jre/bin/java -jar arthas-boot.jar 6
 ```  
+/home/vcap/app/.java-buildpack/open_jdk_jre/bin/java -jar arthas-boot.jar 6
+```    
 Result likes this:  
-![start arthas](start_arthas.PNG)
+![start arthas](images/start_arthas.PNG)
 
 The start command 'attaches' Arthas to the JVM process where our tomcat is running on, then Arthas can interact with that JVM later.
 
 **Step 4: Play around Arthas Commands**
-  
+
+**Case 1**: JVM overview  
+```  
+dashboard
+```  
+Use 'Ctrl + C' to exit from the command
+
+Result:  
+It provides high level overview of JVM assets  
+![dashboard result](images/dashboard.PNG)
+
+**Case 2**: Which thread block mine?  
+```  
+thread -b
+```  
+if we remove the parameter 'b', then all threads are listed
+
+Result:  
+![thread result](images/thread.PNG)
+
+**Case 3**: show system environment variables  
+```  
+sysenv  
+```  
+
+Result:  
+![system environment](images/sysenv.PNG)
+
+**Case 4**: How many times is my method called? Is it run successfully?  
+```  
+monitor -c 5 com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken
+```  
+parameter 'c' told Arthas monitor the JVM and show count number per 5 seconds
+
+Result:  
+![monitor method](images/monitor.PNG) 
+
+**Case 5**: How is my method called? by which parameters and what's the output?  
+```  
+watch  com.sap.solman.projectDashboardService.controller.DefaultController  ApiV1GetJWTToken "{params,returnObj}"  
+```  
+command watch is powerful and useful, it contains a lot of parameters, please refer the official document for a complete parameter list
+
+Result:  
+![watch result](images/watch.PNG)
+
+**Case 5**: What's the difference between different call on my method? are import parameters different? are output different?
+Firstly let's start to record calls on the target method:  
+```  
+tt -t com.sap.solman.projectDashboardService.controller.DefaultController  ApiV1GetJWTToken  
+```  
+Then trigger the calls on this method, by your ways. When it is done please store the tt by 'Ctrl+C'. Results may like this:  
+![tt1](images/tt1.PNG)
+
+Now let's check records we got by previous trace:  
+```  
+tt -l  
+```     
+Results like this:  
+![tt2](images/tt2.PNG)
+
+Now let's look into detail of record 1000:  
+```  
+tt -i 1000  
+```  
+Results:  
+![tt3](images/tt3.PNG)

@@ -125,3 +125,16 @@ tt -i 1000
 ```  
 Results:  
 ![tt3](images/tt3.PNG)
+
+**Case 6**: One of my method is slow, what sub method call causes this problem? may I check the time spent on each method call?    
+Firstly start the trace on this method:  
+```  
+trace com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken  
+```  
+Then trigger the method call and stop the trace by 'Ctrl+C', result likes this:  
+![trace1](images/trace1.PNG)  
+
+There are many options to filter trace target, check the offical document for detail.
+
+**Case 7**: What is my method call stack?  
+

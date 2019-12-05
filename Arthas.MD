@@ -2,6 +2,13 @@
 
 Arthas is an open source tool contributed by Alibaba, it is a rich toolset that assist software development and operation team to trouble shooting in running environment.
 
+>Since Arthas is open source application and most likely we need to deploy it to the target environment (dev, qas or prd) to use it, it maybe a concern from security point of view. So be careful, you need to remove it from your environment after finishing trouble shooting work. Command to remove Arthas (in Linux):  
+```  
+rm -rf ~/.arthas/  
+rm -rf ~/logs/arthas  
+``` 
+
+
 ### Arthas Official Document
 [Github Project](https://github.com/alibaba/arthas)  
 [Documentation](https://alibaba.github.io/arthas/)
@@ -136,5 +143,19 @@ Then trigger the method call and stop the trace by 'Ctrl+C', result likes this:
 
 There are many options to filter trace target, check the offical document for detail.
 
-**Case 7**: What is my method call stack?  
+**Case 7**: What is my method call stack?    
+Firstly start the trace on this method:  
+```  
+stack com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken  
+```  
+Then trigger the method call and stop the trace by 'Ctrl+C', result likes this:  
+![stack](images/stack.PNG)    
+  
+There are many options to filter trace target, check the offical document for detail..  
 
+** Step 4: Exit Arthas and clear the environment **  
+Arthas needs to "enhance" some production classes to finish its monitor work, so it would be a good idea to clean these before we leave it. The command is:  
+```  
+reset  
+```  
+According to Arthas document, this will remove all Arthas enhancements on our classes, our production codes and JVM should back to normal.   

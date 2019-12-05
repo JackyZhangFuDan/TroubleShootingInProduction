@@ -39,13 +39,16 @@ cf ssh <here is your app name in cloud foundry>
 If you login successfully, you will see linux-style command sign '$', you locate at your home and you can verify by command 'ls'.
 
 **Step 2: Download Arthas**  
-According to Arthas installation guide, we can get it by this command:
+
+According to Arthas installation guide, we can get it by this command:  
 ```  
-curl -O https://alibaba.github.io/arthas/arthas-boot.jar
+curl -O https://alibaba.github.io/arthas/arthas-boot.jar  
 ```    
-Above command will download arthas into your home page, use command 'ls' to verify, you should see 'arthas-boot.jar' in the result.
+Above command will download arthas into your home directory, use command ```ls``` to verify, you should see 'arthas-boot.jar' in the result.  
+![ls](images/ls.PNG)
 
 **Step 3: Start Arthas**  
+
 Firstly you need to find out process ID of your jvm in the container:
 ```  
 ps -aux
@@ -53,7 +56,7 @@ ps -aux
 record the PID of java process, it is 6 for my case below:  
 ![ps -aux result](images/ps.PNG)
  
-Above result also tell us which is your java command locates. In Cloud Foundry container, if you run command 'java' in command line, the system will told you it is invalid command, but we know java is installed indeed otherwise how our web server (tomcat) be ran? we need to find java location firstly, actually above result provides us hints, it is "/home/vcap/app/.java-buildpack/open_jdk_jre/bin/java" for my case.
+Above result also tell us where does your java command locate. In Cloud Foundry container, if you run command 'java' in command line, the system will told you it is invalid command, but we know java is installed indeed otherwise how our web server (tomcat) be ran? we need to find java location firstly, actually above result provides us hints, it is "/home/vcap/app/.java-buildpack/open_jdk_jre/bin/java" for my case.
 
 With all of these information, we are ready to start Arthas, for my case:  
 ```  
@@ -62,9 +65,12 @@ With all of these information, we are ready to start Arthas, for my case:
 Result likes this:  
 ![start arthas](images/start_arthas.PNG)
 
-The start command 'attaches' Arthas to the JVM process where our tomcat is running on, then Arthas can interact with that JVM later.
+The start command 'attaches' Arthas to the JVM process where our tomcat is running on, then Arthas can interact with that JVM later. You enter Arthas session from now on, if you want to exit and back to linux command line, you can use Arthas command ```exit```.   
+> Notice: I recommend you call Arthas command ```rest``` before leave it, it will recover all enhanced classes during this session, so your production codes will back to normal.
 
-**Step 4: Play around Arthas Commands**
+**Step 4: Play around Arthas Commands**  
+
+Here I select some cases that our applications may meet, if you want to explore the other powerful command, please visit [Arthas Command List](https://alibaba.github.io/arthas/commands.html) 
 
 **Case 1**: JVM overview  
 ```  
@@ -93,7 +99,7 @@ sysenv
 Result:  
 ![system environment](images/sysenv.PNG)
 
-**Case 4**: How many times is my method called? Is it run successfully?  
+**Case 4**: How many times is my method called in a period? Is it run successfully?  
 ```  
 monitor -c 5 com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken
 ```  
@@ -111,7 +117,7 @@ command watch is powerful and useful, it contains a lot of parameters, please re
 Result:  
 ![watch result](images/watch.PNG)
 
-**Case 5**: What's the difference between different call on my method? are import parameters different? are output different?
+**Case 5**: What's the difference between different calls on my method? are the import parameters different? are the output different?  
 Firstly let's start to record calls on the target method:  
 ```  
 tt -t com.sap.solman.projectDashboardService.controller.DefaultController  ApiV1GetJWTToken  
@@ -133,7 +139,7 @@ tt -i 1000
 Results:  
 ![tt3](images/tt3.PNG)
 
-**Case 6**: One of my method is slow, what sub method call causes this problem? may I check the time spent on each method call?    
+**Case 6**: One of my method is slow, what sub-method-call causes this problem? may I check the time spent on each of these method calls?    
 Firstly start the trace on this method:  
 ```  
 trace com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken  

@@ -1,6 +1,9 @@
 # Using BTrace to Dianosticate Application Running in Cloud Foundry.
 
 BTrace is a pretty old tool of trouble shooting running java application, it was introduced by Sun at 2007. It claims itself as 'safe and simple', with BTrace's help we can detect root cause while the application is running.
+
+Developers may like BTrace a lot, because it is very flexible, what to monitor, when to take action and what action to take are fully depends on developer's trace scripts.  
+
 > 1. One thing we have to remember, after we inject codes to classes running in JVM, the injected codes will be there until the application is restarted, that can be a performance concern: although the codes will not be ran if we exit BTrace, but JVM will check if to run the codes anyway. So we'd better be careful to use BTrace.  
 > 2. Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
  

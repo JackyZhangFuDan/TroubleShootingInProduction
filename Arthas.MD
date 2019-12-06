@@ -11,7 +11,8 @@ rm -rf ~/logs/arthas
 
 ### Arthas Official Document
 [Github Project](https://github.com/alibaba/arthas)  
-[Documentation](https://alibaba.github.io/arthas/)
+[Documentation](https://alibaba.github.io/arthas/)  
+[One Good Artical from Internet](https://cloud.tencent.com/developer/article/1534894) (Chinese Only)
 
 ### What Arthas can do for us
 I only focus on necessarity of our applications, for complete description of Arthas' power, please refer to its [command list](https://alibaba.github.io/arthas/commands.html).
@@ -103,9 +104,9 @@ Result:
 ```  
 monitor -c 5 com.sap.solman.projectDashboardService.controller.DefaultController ApiV1GetJWTToken
 ```  
-parameter 'c' told Arthas monitor the JVM and show count number per 5 seconds
+parameter 'c' told Arthas monitor the JVM, accumulate the count number of the happened calls in every 5 seconds.
 
-Result:  
+Now trigger the method call by your way, you will see result like this:  
 ![monitor method](images/monitor.PNG) 
 
 **Case 5**: How is my method called? by which parameters and what's the output?  
@@ -122,7 +123,8 @@ Firstly let's start to record calls on the target method:
 ```  
 tt -t com.sap.solman.projectDashboardService.controller.DefaultController  ApiV1GetJWTToken  
 ```  
-Then trigger the calls on this method, by your ways. When it is done please store the tt by 'Ctrl+C'. Results may like this:  
+Then trigger the calls on this method, by your ways. When it is done please stop the tt by 'Ctrl+C'.   
+Results may like this:  
 ![tt1](images/tt1.PNG)
 
 Now let's check records we got by previous trace:  

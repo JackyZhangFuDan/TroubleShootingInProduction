@@ -2,6 +2,7 @@
 
 BTrace is a pretty old tool of trouble shooting running java application, it was introduced by Sun at 2007. It claims itself as 'safe and simple', with BTrace's help we can detect root cause while the application is running.
 > One thing we have to remember, after we inject codes to classes running in JVM, the injected codes will be there until the application is restarted, that can be a performance concern: although the codes will not be ran if we exit BTrace, but JVM will check if to run the codes anyway. So we'd better be careful to use BTrace.  
+
 > Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
  
 ### BTrace Official Document
@@ -51,5 +52,50 @@ Because in cloud foundry container, JAVA_HOME variable isn't set, let's add a te
 Now let's try to call btrace without any parameters, we are success if we see this:  
 ![3](images/btrace3.PNG)
  
-**Step 3: Play around**
- 
+**Step 3: Create Trace Codes**  
+BTRace codes are putted in static class' static method, you can't write all element provided by java language, there are some restrictions to avoid damage caused by BTrace, see detail in [this page](https://github.com/btraceio/btrace/wiki/Trace-Scripts#restrictions) of its offical website.
+
+Let's create class MyBTraceClass:  
+```  
+mkdir classes    
+touch .classes/MyTraceClass.java
+vi MyBTraceClass.java
+```  
+
+here is my test trace class:  
+```java  
+package classes;
+
+import com.sun.btrace.annotations.*;
+import static com.sun.btrace.BTraceUtils.*;
+
+/**
+ * This script traces method entry into every method of 
+ * every class in com.sap.solman.projectDashboardService.controller!
+ */
+@BTrace public class MyBTraceClass {
+    @OnMethod(
+        clazz="/com\\.sap\\.solman\\.projectDashboardService\\.controller\\..*/",
+        method="/.*/"
+    )
+    public static void m(@ProbeClassName String probeClass, @ProbeMethodName String probeMethod) {
+        print(Strings.strcat("entered ", probeClass));
+        println(Strings.strcat(".", probeMethod));
+    }
+} 
+```  
+
+This method simplely print information when method of my controller classes under a package is called. You can imagine there are many other possibilities beside print. 
+
+**Step 4: Run BTrace to Inject the Trace Codes**  
+Now it is time to start BTrace with my trace codes:  
+```  
+./bin/btrace 6 ./classes/MyTraceClass.java
+```  
+You will see the command takes you into running mode, it will not exit until you hit 'Ctrl+C', don't do that until you finish trace work.  
+
+After trigge method calls some times, we can see out put of our trace:  
+![4](images/btrace4.PNG)
+
+**Step 5: Exit BTrace**  
+Hit 'Ctrl+C' to exit from running mode and back to command line.

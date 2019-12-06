@@ -2,7 +2,7 @@
 
 BTrace is a pretty old tool of trouble shooting running java application, it was introduced by Sun at 2007. It claims itself as 'safe and simple', with BTrace's help we can detect root cause while the application is running.
 > 1. One thing we have to remember, after we inject codes to classes running in JVM, the injected codes will be there until the application is restarted, that can be a performance concern: although the codes will not be ran if we exit BTrace, but JVM will check if to run the codes anyway. So we'd better be careful to use BTrace.  
-2. Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
+> 2. Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
  
 ### BTrace Official Document
 [Github Project](https://github.com/btraceio/btrace)  
@@ -10,6 +10,8 @@ BTrace is a pretty old tool of trouble shooting running java application, it was
 [Annotations in Trace Codes](https://github.com/btraceio/btrace/wiki/BTrace-Annotations)
 
 ### What BTrace can do for us  
+BTrace runs your tracing-purpose-codes when the defined conditions (by you) are fulfilled, it will supply 'context' - like parameters values which are used to the target method - to your trace codes so that you can print them into standard output. As developer you are very flexible regarding what to monitor.  
+
 BTrace injects tracing-purpose-codes to target class (no matter provided by jdk or your own application), the codes will be ran to let you print helpful information. It works like AOP. As developer you need to write tracing codes,define when the codes will be ran, then ask BTrace to inject them to the target Java process.  
    
 Think about this situation: you have an application, you find it will delete one important file periodically but you have no idea why that happen. Then one solution by BTrace is that you inject stack printing codes to delete-method of java.io.File class to record call-stack when deleting happen.

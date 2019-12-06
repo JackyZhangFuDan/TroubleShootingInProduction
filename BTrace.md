@@ -1,16 +1,16 @@
 # Using BTrace to Dianosticate Application Running in Cloud Foundry.
 
 BTrace is a pretty old tool of trouble shooting running java application, it was introduced by Sun at 2007. It claims itself as 'safe and simple', with BTrace's help we can detect root cause while the application is running.
-> One thing we have to remember, after we inject codes to classes running in JVM, the injected codes will be there until the application is restarted, that can be a performance concern: although the codes will not be ran if we exit BTrace, but JVM will check if to run the codes anyway. So we'd better be careful to use BTrace.  
-
-> Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
+> 1. One thing we have to remember, after we inject codes to classes running in JVM, the injected codes will be there until the application is restarted, that can be a performance concern: although the codes will not be ran if we exit BTrace, but JVM will check if to run the codes anyway. So we'd better be careful to use BTrace.  
+2. Another point we need to remind ourselves is that, BTrace can break down the application if bad quality trace codes are used.
  
 ### BTrace Official Document
 [Github Project](https://github.com/btraceio/btrace)  
 [User Guide](https://github.com/btraceio/btrace/wiki)
+[Annotations in Trace Codes](https://github.com/btraceio/btrace/wiki/BTrace-Annotations)
 
 ### What BTrace can do for us  
-BTrace injects tracing purpose codes to target class (no matter provided by java or your own application), the codes will be ran to let you print helpful information. It works like AOP. As developer you need to write tracing codes,define when the codes need to be ran, then ask BTrace to inject them to the target Java process.  
+BTrace injects tracing-purpose-codes to target class (no matter provided by jdk or your own application), the codes will be ran to let you print helpful information. It works like AOP. As developer you need to write tracing codes,define when the codes will be ran, then ask BTrace to inject them to the target Java process.  
    
 Think about this situation: you have an application, you find it will delete one important file periodically but you have no idea why that happen. Then one solution by BTrace is that you inject stack printing codes to delete-method of java.io.File class to record call-stack when deleting happen.
 
@@ -56,7 +56,7 @@ Now let's try to call btrace without any parameters, we are success if we see th
  
 **Step 3: Create Trace Codes**  
 
-BTrace codes are putted in static class' static method, you can't write all element provided by java language, there are some restrictions to avoid damage caused by BTrace, see detail in [this page](https://github.com/btraceio/btrace/wiki/Trace-Scripts#restrictions) of its offical website.
+BTrace codes should be putted into a class' static method, you can't use all elements provided by java language, there are some restrictions to avoid huge damage, if you want to learn all the restrictions, see detail in [this page](https://github.com/btraceio/btrace/wiki/Trace-Scripts#restrictions) of its offical website.
 
 Let's create class MyBTraceClass:  
 ```  

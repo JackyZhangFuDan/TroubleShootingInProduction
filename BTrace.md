@@ -17,6 +17,7 @@ Think about this situation: you have an application, you find it will delete one
 ### Using BTrace on Application Running in Cloud Foundry  
 
 **Step 0: Prerequisites**  
+
 1. Our application is SSH enabled. That needs 'Operator', 'Space Manager' and 'Space Developer' all say 'ok', [detail here](https://docs.cloudfoundry.org/devguide/deploy-apps/app-ssh-overview.html).
 2. You are member of the cloud account and the target space in that account. how to verify: try "cf login" to go through the logon process.
 
@@ -28,6 +29,7 @@ cf ssh <here is your app name in cloud foundry>
 If you login successfully, you will see linux-style command sign '$', you locate at your home and you can verify by command 'ls'.
 
 **Step 2: Download and Setup BTrace**  
+
 I create one folder to contain BTrace assets centrall:
 ```
 mkdir btrace  
@@ -53,7 +55,8 @@ Now let's try to call btrace without any parameters, we are success if we see th
 ![3](images/btrace3.PNG)
  
 **Step 3: Create Trace Codes**  
-BTRace codes are putted in static class' static method, you can't write all element provided by java language, there are some restrictions to avoid damage caused by BTrace, see detail in [this page](https://github.com/btraceio/btrace/wiki/Trace-Scripts#restrictions) of its offical website.
+
+BTrace codes are putted in static class' static method, you can't write all element provided by java language, there are some restrictions to avoid damage caused by BTrace, see detail in [this page](https://github.com/btraceio/btrace/wiki/Trace-Scripts#restrictions) of its offical website.
 
 Let's create class MyBTraceClass:  
 ```  
@@ -87,8 +90,14 @@ import static com.sun.btrace.BTraceUtils.*;
 
 This method simplely print information when method of my controller classes under a package is called. You can imagine there are many other possibilities beside print. 
 
+@Method annotation is a well known one in BTrace, it will define which class's which method will be monitored at a point of time (begin of method call or end, or an event happen). If you want to see other [annotations beside @Method, go to this page](https://github.com/btraceio/btrace/wiki/BTrace-Annotations).  
+
 **Step 4: Run BTrace to Inject the Trace Codes**  
-Now it is time to start BTrace with my trace codes:  
+
+Like Arthas, BTrace needs you provide jvm process id to monitor, so you need to find the PID firstly. command ```ps -aux ``` can be used for that:  
+![ps](images/ps.PNG)  
+
+So the process id is 6 for my case. Now it is time to start BTrace with my trace codes:  
 ```  
 ./bin/btrace 6 ./classes/MyTraceClass.java
 ```  
